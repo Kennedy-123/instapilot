@@ -1,0 +1,53 @@
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ContextTypes
+from states import PHOTO
+from telegram.error import TelegramError, NetworkError
+import logging
+from utils import check_user_access_token
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env
+load_dotenv()
+
+LOGIN_URL = os.getenv('LOGIN_URL')
+
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+IG_USER_ID = os.getenv('INSTAGRAM_BUSINESS_ACCOUNT_ID')
+APP_ID = os.getenv('APP_ID')
+APP_SECRET = os.getenv('APP_SECRET')
+
+logger = logging.getLogger(__name__)
+
+
+async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    global ACCESS_TOKEN  # Make sure we can reassign
+    try:
+        is_token_valid = check_user_access_token(access_token=ACCESS_TOKEN, app_id=APP_ID, app_secret=APP_SECRET)
+
+        # check if the token is not valid
+        if not is_token_valid:
+            logger.warning("❌ Token is invalid or expired. Ask user to log in again.")
+
+            telegram_id = update.effective_user.id
+            login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"
+            keyboard = [[InlineKeyboardButton("🔗 Reconnect Facebook", url=login_url)]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            await update.message.reply_text(
+                "⚠️ Your Instagram session has expired. Please log in again to continue.",
+                reply_markup=reply_markup
+            )
+            return
+
+        await update.message.reply_text("📸 Please send the image you want to schedule.")
+        return PHOTO
+    except NetworkError as e:
+        logger.error(f"Network error: {e}")
+        await update.message.reply_text("⚠️ Sorry, something went wrong. Please try again shortly.")
+    except TelegramError as e:
+        logger.error(f"Telegram error: {e}")
+        await update.message.reply_text("⚠️ Telegram is currently experiencing issues. Please try again later.")
+    except Exception as e:
+        logger.exception(f"Unexpected error in help_command: {e}")
+        await update.message.reply_text("⚠️ An unexpected error occurred.")
