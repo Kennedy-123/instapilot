@@ -6,30 +6,38 @@ import logging
 from utils import check_user_access_token
 from dotenv import load_dotenv
 import os
+from db.connect_db import SessionLocal
+from models import User
 
 # Load environment variables from .env
 load_dotenv()
 
 LOGIN_URL = os.getenv('LOGIN_URL')
-
-ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 IG_USER_ID = os.getenv('INSTAGRAM_BUSINESS_ACCOUNT_ID')
 APP_ID = os.getenv('APP_ID')
 APP_SECRET = os.getenv('APP_SECRET')
 
 logger = logging.getLogger(__name__)
 
+def get_user_access_token(telegram_id: int) -> str | None:
+    """Fetch the user's access token from db by telegram_id."""
+    with SessionLocal() as session:  # create session
+        user = session.query(User).filter_by(telegram_id=str(telegram_id)).first()
+        if user and user.facebook_access_token:
+            return user.facebook_access_token
+        return None
+
 
 async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global ACCESS_TOKEN  # Make sure we can reassign
     try:
-        is_token_valid = check_user_access_token(access_token=ACCESS_TOKEN, app_id=APP_ID, app_secret=APP_SECRET)
-
+        telegram_id = update.effective_user.id
+        
+        # get token from db
+        access_token = get_user_access_token(telegram_id)
+        
         # check if the token is not valid
-        if not is_token_valid:
+        if not access_token:
             logger.warning("❌ Token is invalid or expired. Ask user to log in again.")
-
-            telegram_id = update.effective_user.id
             login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"
             keyboard = [[InlineKeyboardButton("🔗 Reconnect Facebook", url=login_url)]]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -37,6 +45,21 @@ async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 "⚠️ Your Instagram session has expired. Please log in again to continue.",
                 reply_markup=reply_markup
+            )
+            return
+        
+        # validate token
+        is_token_valid = check_user_access_token(access_token=access_token, app_id=APP_ID, app_secret=APP_SECRET)
+        
+        if not is_token_valid:
+            logger.warning("❌ Token is invalid or expired. Ask user to log in again.")
+            login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"
+            keyboard = [[InlineKeyboardButton("🔗 Reconnect Facebook", url=login_url)]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            await update.message.reply_text(
+                "⚠️ Your Instagram session has expired. Please log in again to continue.",
+                reply_markup=reply_markup,
             )
             return
 

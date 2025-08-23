@@ -37,4 +37,3 @@ if __name__ == '__main__':
 
     print('polling...')
     app.run_polling(poll_interval=3)
-
