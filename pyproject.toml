@@ -10,4 +10,5 @@ dependencies = [
     "python-telegram-bot>=22.1",
     "requests>=2.32.4",
     "sqlalchemy>=2.0.42",
+    "supabase>=2.18.1",
 ]

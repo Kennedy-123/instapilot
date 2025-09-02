@@ -10,7 +10,7 @@ conv_handler = ConversationHandler(
     states={
         PHOTO: [MessageHandler(filters.PHOTO, receive_photo)],
         CAPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_caption)],
-        # DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_datetime)],
+        DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_datetime)],
     },
     fallbacks=[CommandHandler("cancel", cancel)],
     allow_reentry=True

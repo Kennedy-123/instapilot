@@ -14,7 +14,7 @@ class Post(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Foreign Key
-    author_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    author_id = Column(Integer, ForeignKey('users.telegram_id'), nullable=False)
 
     # Relationship (requires User model to also be defined)
     author = relationship("User", back_populates="posts")

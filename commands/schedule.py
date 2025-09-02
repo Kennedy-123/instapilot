@@ -52,7 +52,6 @@ async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         is_token_valid = check_user_access_token(access_token=access_token, app_id=APP_ID, app_secret=APP_SECRET)
         
         if not is_token_valid:
-            logger.warning("❌ Token is invalid or expired. Ask user to log in again.")
             login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"
             keyboard = [[InlineKeyboardButton("🔗 Reconnect Facebook", url=login_url)]]
             reply_markup = InlineKeyboardMarkup(keyboard)

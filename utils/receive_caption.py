@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 async def receive_caption(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         caption = update.message.text
+        if not caption:
+            await update.message.reply_text("⚠️ Please send a text caption.")
+            return
+        
         context.user_data["caption"] = caption
         await update.message.reply_text("⏰ When should I post it? (Use format: `YYYY-MM-DD HH:MM`)")
         return DATETIME
