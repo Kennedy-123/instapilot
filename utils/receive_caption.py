@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from states import DATETIME
+from states import DATE
 from telegram.error import TelegramError, NetworkError
 import logging
 
@@ -15,8 +15,8 @@ async def receive_caption(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         
         context.user_data["caption"] = caption
-        await update.message.reply_text("⏰ When should I post it? (Use format: `YYYY-MM-DD HH:MM`)")
-        return DATETIME
+        await update.message.reply_text("⏰ When should I post it? (Use format: `YYYY-MM-DD`)")
+        return DATE
     except NetworkError as e:
         logger.error(f"Network error: {e}")
         await update.message.reply_text("⚠️ Sorry, something went wrong. Please try again shortly.")

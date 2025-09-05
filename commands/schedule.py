@@ -19,6 +19,7 @@ APP_SECRET = os.getenv('APP_SECRET')
 
 logger = logging.getLogger(__name__)
 
+
 def get_user_access_token(telegram_id: int) -> str | None:
     """Fetch the user's access token from db by telegram_id."""
     with SessionLocal() as session:  # create session
@@ -37,7 +38,6 @@ async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # check if the token is not valid
         if not access_token:
-            logger.warning("❌ Token is invalid or expired. Ask user to log in again.")
             login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"
             keyboard = [[InlineKeyboardButton("🔗 Reconnect Facebook", url=login_url)]]
             reply_markup = InlineKeyboardMarkup(keyboard)

@@ -1,6 +1,6 @@
 from telegram.ext import Application, CommandHandler, filters, MessageHandler, ConversationHandler
 from commands import *
-from states import PHOTO, DATETIME, CAPTION
+from states import PHOTO, DATE, CAPTION, TIME
 from utils import *
 from config import TOKEN
 
@@ -10,7 +10,8 @@ conv_handler = ConversationHandler(
     states={
         PHOTO: [MessageHandler(filters.PHOTO, receive_photo)],
         CAPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_caption)],
-        DATETIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_datetime)],
+        DATE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_date)],
+        TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_time)]
     },
     fallbacks=[CommandHandler("cancel", cancel)],
     allow_reentry=True
