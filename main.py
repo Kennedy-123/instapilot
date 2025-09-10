@@ -13,7 +13,7 @@ conv_handler = ConversationHandler(
         DATE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_date)],
         TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_time)]
     },
-    fallbacks=[CommandHandler("cancel", cancel)],
+    fallbacks=[CommandHandler("cancel", cancel_command)],
     allow_reentry=True
 )
 

@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         await update.message.reply_text("❌ Scheduling cancelled.")
         return ConversationHandler.END

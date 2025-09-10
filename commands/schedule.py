@@ -13,7 +13,6 @@ from models import User
 load_dotenv()
 
 LOGIN_URL = os.getenv('LOGIN_URL')
-IG_USER_ID = os.getenv('INSTAGRAM_BUSINESS_ACCOUNT_ID')
 APP_ID = os.getenv('APP_ID')
 APP_SECRET = os.getenv('APP_SECRET')
 
@@ -31,11 +30,15 @@ def get_user_access_token(telegram_id: int) -> str | None:
 
 async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        # Notify user we're checking
+        await update.message.reply_text("⏳ Checking your Instagram session, please wait...")
+        
         telegram_id = update.effective_user.id
         
         # get token from db
         access_token = get_user_access_token(telegram_id)
         
+
         # check if the token is not valid
         if not access_token:
             login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"

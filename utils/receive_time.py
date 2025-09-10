@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from config import supabase
 from db.connect_db import SessionLocal
 from models.post import Post
+from scheduler import scheduler
+from apscheduler.triggers.date import DateTrigger
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +56,17 @@ async def receive_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with SessionLocal() as session:
                 session.add(new_post)
                 session.commit()
+                
+            # Schedule job
+            if scheduled_datetime:
+                scheduler.add_job(
+                    func=publish_post,   # function to call
+                    trigger=DateTrigger(run_date=scheduled_datetime),
+                    args=[new_post.id],  # pass post id
+                    id=f"post_{new_post.id}",  # unique id
+                    replace_existing=True
+                )
+
 
             await update.message.reply_text(
                 f"✅ Scheduled!\n\n"

@@ -1,4 +1,3 @@
-from .cancel import cancel
 from .handle_response import handle_response
 from .handle_message import handle_message
 from .receive_caption import receive_caption
@@ -9,4 +8,4 @@ from .refresh_access_token import refresh_access_token
 from .receive_date import receive_date
 from .receive_time import receive_time
 
-__all__ = ["receive_photo", "receive_caption", "cancel", "handle_message", "handle_response", "error_handler", "check_user_access_token", "refresh_access_token", "receive_date", "receive_time"]
+__all__ = ["receive_photo", "receive_caption", "handle_message", "handle_response", "error_handler", "check_user_access_token", "refresh_access_token", "receive_date", "receive_time"]
