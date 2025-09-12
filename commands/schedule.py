@@ -37,7 +37,6 @@ async def schedule_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # get token from db
         access_token = get_user_access_token(telegram_id)
-        
 
         # check if the token is not valid
         if not access_token:

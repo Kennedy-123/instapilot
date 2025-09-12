@@ -10,8 +10,7 @@ class User(Base):
     telegram_id = Column(BigInteger, unique=True, nullable=False)
     facebook_name = Column(String(80), nullable=False, unique=True)
     facebook_access_token = Column(String(512))
-    facebook_id = Column(String(80), nullable=False, unique=True)
-    facebook_token_expires_at = Column(DateTime)
+    instagram_id = Column(String(80), nullable=True, unique=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relationships

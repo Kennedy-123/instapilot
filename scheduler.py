@@ -1,7 +1,4 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-# import asyncio
+# scheduler.py
+from apscheduler.schedulers.background import BackgroundScheduler
 
-# Make sure the scheduler is initialized globally once in your bot entrypoint
-scheduler = AsyncIOScheduler()
-
-# scheduler.start()
+scheduler = BackgroundScheduler()

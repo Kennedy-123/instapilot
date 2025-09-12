@@ -3,6 +3,7 @@ from commands import *
 from states import PHOTO, DATE, CAPTION, TIME
 from utils import *
 from config import TOKEN
+from scheduler import scheduler
 
 
 conv_handler = ConversationHandler(
@@ -20,6 +21,10 @@ conv_handler = ConversationHandler(
 
 if __name__ == '__main__':
     print("Staring bot...")
+    
+    # 🔹 Start APScheduler in background
+    scheduler.start()
+    
     app = Application.builder().token(TOKEN).build()
 
     # 🔹 1. Conversation Handler — should be first to catch multi-step commands early
