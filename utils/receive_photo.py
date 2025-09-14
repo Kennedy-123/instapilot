@@ -5,7 +5,6 @@ from telegram.error import NetworkError, TelegramError
 import uuid
 import io
 
-
 async def receive_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         if not update.message.photo:

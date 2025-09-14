@@ -9,7 +9,6 @@ load_dotenv()
 
 LOGIN_URL = os.getenv('LOGIN_URL')
 
-
 async def connect_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = update.effective_user.id
     login_url = f"{LOGIN_URL}?telegram_id={telegram_id}"

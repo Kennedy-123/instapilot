@@ -2,7 +2,6 @@ from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 from telegram.error import NetworkError, TelegramError
 
-
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         await update.message.reply_text("❌ Scheduling cancelled.")
