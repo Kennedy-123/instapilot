@@ -13,5 +13,4 @@ def check_user_access_token(access_token, app_id, app_secret):
         data = res.json().get("data", {})
         return data.get("is_valid", False)
     except requests.RequestException as e:
-        print(f"⚠️ Token check failed: {e}")
         return False

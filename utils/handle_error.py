@@ -8,9 +8,6 @@ logger = logging.getLogger(__name__)
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Global error handler for the bot."""
 
-    # Log full traceback for debugging
-    logger.error("⚠️ Exception while handling an update:", exc_info=context.error)
-
     # Only try to respond if it's a Telegram Update
     if isinstance(update, Update):
         try:

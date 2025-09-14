@@ -3,9 +3,6 @@ from telegram.ext import ContextTypes
 from .handle_response import handle_response
 from config import BOT_USERNAME
 from telegram.error import TelegramError, NetworkError
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -24,12 +21,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if response:
             await update.message.reply_text(response)
-    except NetworkError as e:
-        logger.error(f"Network error: {e}")
+    except NetworkError:
         await update.message.reply_text("⚠️ Sorry, something went wrong. Please try again shortly.")
-    except TelegramError as e:
-        logger.error(f"Telegram error: {e}")
+    except TelegramError:
         await update.message.reply_text("⚠️ Telegram is currently experiencing issues. Please try again later.")
-    except Exception as e:
-        logger.exception(f"Unexpected error in help_command: {e}")
+    except Exception:
         await update.message.reply_text("⚠️ An unexpected error occurred.")

@@ -1,11 +1,8 @@
 from telegram import Update
-from telegram.ext import ContextTypes, ConversationHandler
+from telegram.ext import ContextTypes
 from telegram.error import NetworkError, TelegramError
-import logging
-from datetime import datetime
-from states import TIME
-logger = logging.getLogger(__name__)
-
+from datetime import datetime, date, timedelta
+from states import TIME, DATE
 
 async def receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
@@ -18,7 +15,23 @@ async def receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 "⚠️ Invalid format. Please use `YYYY-MM-DD` (e.g., 2025-09-05)."
             )
-            return  # stay in the same state until valid input
+            return DATE
+        
+        # 🚨 Check if date is in the past
+        today = date.today()
+        if scheduled_date < today:
+            await update.message.reply_text(
+                "⚠️ The date you entered has already passed. Please enter a future date."
+            )
+            return DATE
+        
+        # 🚨 Check if date is within 60 days
+        max_date = today + timedelta(days=60)
+        if scheduled_date > max_date:
+            await update.message.reply_text(
+                "⚠️ Please choose a date within the next 60 days."
+            )
+            return DATE
 
         await update.message.reply_text(
             "✅ Date saved!\n\n"
@@ -28,12 +41,9 @@ async def receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["date"] = str(scheduled_date)
 
         return TIME
-    except NetworkError as e:
-        logger.error(f"Network error: {e}")
+    except NetworkError:
         await update.message.reply_text("⚠️ Sorry, something went wrong. Please try again shortly.")
-    except TelegramError as e:
-        logger.error(f"Telegram error: {e}")
+    except TelegramError:
         await update.message.reply_text("⚠️ Telegram is currently experiencing issues. Please try again later.")
-    except Exception as e:
-        logger.exception(f"Unexpected error in help_command: {e}")
+    except Exception:
         await update.message.reply_text("⚠️ An unexpected error occurred.")

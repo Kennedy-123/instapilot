@@ -24,5 +24,4 @@ def refresh_access_token(old_token: str) -> tuple[str | None, int | None]:
         return new_token, expires_in
     except requests.RequestException as e:
         # Optionally log the error
-        print(f"[refresh_long_lived_token] Error refreshing token: {e}")
         return None, None
